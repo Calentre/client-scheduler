@@ -22,6 +22,7 @@ const config: Config = {
         'carbon-black': '#0D0D0D',
         purple: '#8D3FF2',
         'hover-purple': '#E9D9FF',
+        'success-green': '#03A500',
       },
     },
     screens: {

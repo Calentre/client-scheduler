@@ -1,3 +1,5 @@
+import { EnterDetails } from '@/components/EnterDetails';
+
 export default function Page() {
-  return <div>event details</div>;
+  return <EnterDetails />;
 }

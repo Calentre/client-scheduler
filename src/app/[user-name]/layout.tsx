@@ -2,9 +2,8 @@ import { getUserDetails, getUserEvents } from '@/helpers/api';
 import { SchedulerProvider } from '@/providers/SchedulerProvider';
 import type { Metadata } from 'next';
 
-interface Props {
+interface Props extends PageProps {
   children: React.ReactNode;
-  params: { 'user-name'?: string };
 }
 
 export const metadata: Metadata = {

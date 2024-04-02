@@ -11,6 +11,7 @@ interface Props {
   block?: boolean;
   href?: string;
   className?: string;
+  type?: 'button' | 'submit' | 'reset';
 }
 
 export const Button = ({
@@ -21,6 +22,7 @@ export const Button = ({
   block,
   href,
   className,
+  type,
 }: Props) => {
   const classes = classNames(
     `border border-solid text-sm font-normal ${className}`,
@@ -50,6 +52,7 @@ export const Button = ({
       className={classes}
       disabled={disabled}
       onClick={onClick}
+      type={type}
     >
       {children}
     </button>

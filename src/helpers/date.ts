@@ -28,4 +28,11 @@ export const formatDate = (
   }
 ) => new Date(date).toLocaleDateString(lang, format);
 
+export const abbreviateTimezone = (date: string) =>
+  new Date(date)
+    .toLocaleTimeString('en-us', {
+      timeZoneName: 'short',
+    })
+    .split(' ')[2];
+
 export const stringToDate = (value: string) => new Date(value);

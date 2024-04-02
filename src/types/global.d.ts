@@ -1,7 +1,7 @@
 interface PageProps {
   params?: {
-    'user-name': string;
-    'event-name': string;
+    'user-name'?: string;
+    'event-name'?: string;
   };
   searchParams?: any;
 }
