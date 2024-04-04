@@ -3,7 +3,7 @@ interface PageProps {
     'user-name'?: string;
     'event-name'?: string;
   };
-  searchParams?: any;
+  searchParams?: { [key: string]: string | string[] | undefined };
 }
 
 declare namespace NodeJS {
