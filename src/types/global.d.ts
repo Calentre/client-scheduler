@@ -1,9 +1,9 @@
 interface PageProps {
-  params?: {
+  params: {
     'user-name'?: string;
     'event-name'?: string;
   };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
 declare namespace NodeJS {
