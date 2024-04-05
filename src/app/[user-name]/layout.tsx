@@ -4,7 +4,10 @@ import type { Metadata } from 'next';
 
 interface Props {
   children: React.ReactNode;
-  params: { 'user-name'?: string };
+  params: {
+    'user-name': string;
+    'event-name': string;
+  };
 }
 
 export const metadata: Metadata = {
@@ -15,17 +18,13 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children, params }: Props) {
   const userName = params?.['user-name'];
 
-  if (!userName) {
-    return 'user not found error 1'; // TODO
-  }
-
   const [userEventsResponse, userDetailsResponse] = await Promise.all([
     getUserEvents(userName),
     getUserDetails(userName),
   ]);
 
   if (!userDetailsResponse.user) {
-    return 'user not found error 2'; // TODO
+    return 'user not found error'; // TODO
   }
 
   return (

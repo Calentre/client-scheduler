@@ -1,11 +1,7 @@
 import { Scheduler } from '@/components/Scheduler';
 import { getEventSchedules } from '@/helpers/api';
 
-interface Props {
-  params: { 'user-name'?: string; 'event-name'?: string };
-}
-
-export default async function Page({ params }: Props) {
+export default async function Page({ params }: PageProps) {
   const eventName = params?.['event-name'];
 
   if (!eventName) {
@@ -18,5 +14,7 @@ export default async function Page({ params }: Props) {
     return 'no schedules found for this event error'; // TODO
   }
 
-  return <Scheduler schedules={schedulesResponse.schedules} />;
+  return (
+    <Scheduler eventName={eventName} schedules={schedulesResponse.schedules} />
+  );
 }

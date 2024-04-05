@@ -8,6 +8,7 @@ import { Calendar } from '../Calendar';
 import { Strike } from '../Icons/Strike';
 import { Www } from '../Icons/Www';
 import { Button } from '../common/Button';
+import { CardHeader } from '../common/CardHeader';
 import { Toggler } from '../common/Toggler';
 import { AvailableTimes } from './AvailableTimes';
 
@@ -27,9 +28,7 @@ export const DateDetails = () => {
     <div className='border-l border-off-gray pl-7 tablet:border-l-0 tablet:border-t tablet:pl-0'>
       <div className='flex flex-col gap-6 py-10 pr-10 tablet:pr-0'>
         <div className='flex items-start'>
-          <p className='text-[22px] font-semibold leading-none tracking-[0.15px] text-gray'>
-            {translate('Select date and time')}
-          </p>
+          <CardHeader>{translate('Select date and time')}</CardHeader>
         </div>
         <div className='flex flex-row gap-6'>
           <div className='flex flex-col gap-7 tablet:w-full'>

@@ -4,7 +4,7 @@ export interface ScheduleItem {
   id: number;
   eventId: number;
   date: string;
-  isExpired?: boolean;
+  isExpired: boolean;
   isActive: boolean;
 }
 
