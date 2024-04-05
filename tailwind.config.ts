@@ -1,5 +1,17 @@
 import type { Config } from 'tailwindcss';
 
+export const themeColors = {
+  gray: '#4D4D4D',
+  'light-gray': '#808080',
+  'carbon-gray': '#262626',
+  'off-gray': '#B3B3B3',
+  'mutted-gray': '#7676801f',
+  'carbon-black': '#0D0D0D',
+  purple: '#8D3FF2',
+  'hover-purple': '#E9D9FF',
+  'success-green': '#03A500',
+};
+
 const config: Config = {
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
@@ -13,17 +25,7 @@ const config: Config = {
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
-      colors: {
-        gray: '#4D4D4D',
-        'light-gray': '#808080',
-        'carbon-gray': '#262626',
-        'off-gray': '#B3B3B3',
-        'mutted-gray': '#7676801f',
-        'carbon-black': '#0D0D0D',
-        purple: '#8D3FF2',
-        'hover-purple': '#E9D9FF',
-        'success-green': '#03A500',
-      },
+      colors: themeColors,
     },
     screens: {
       tablet: { max: '640px' },

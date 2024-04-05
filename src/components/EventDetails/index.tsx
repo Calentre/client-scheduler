@@ -69,7 +69,7 @@ export const EventDetails = ({
               {showSelectedSchedule && selectedSchedule && (
                 <div className='flex flex-row items-center gap-2'>
                   <CalendarCheck size={18} />
-                  <span className='text-success-green flex gap-1 text-sm font-normal'>
+                  <span className='flex gap-1 text-sm font-normal text-success-green'>
                     {/* Tue, Oct 31, 1:30 pm WAT */}
                     {format(
                       selectedSchedule.date,

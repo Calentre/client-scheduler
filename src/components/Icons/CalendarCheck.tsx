@@ -1,9 +1,14 @@
+import { themeColors } from '../../../tailwind.config';
+
 interface Props {
   size?: number;
   color?: string;
 }
 
-export const CalendarCheck = ({ size = 18, color = '#03A500' }: Props) => {
+export const CalendarCheck = ({
+  size = 18,
+  color = themeColors['success-green'],
+}: Props) => {
   return (
     <svg
       width={size}
