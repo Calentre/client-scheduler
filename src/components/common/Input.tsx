@@ -11,7 +11,7 @@ export const Input = ({ label, block, ...props }: Props) => {
     <div className='flex flex-col gap-2'>
       {label && (
         <label
-          className='text-base font-normal text-carbon-black'
+          className='text-primary text-base font-normal'
           htmlFor={props?.id || ''}
         >
           {label}

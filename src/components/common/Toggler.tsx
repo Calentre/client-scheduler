@@ -15,7 +15,7 @@ export const Toggler = ({ options, onChange, value }: Props) => {
         <p
           key={`toggle-option-${index}`}
           className={classNames(
-            'cursor-pointer rounded-[3px] px-[20px] py-[10px] text-xs font-medium leading-4 text-carbon-black transition-all',
+            'text-primary cursor-pointer rounded-[3px] px-[20px] py-[10px] text-xs font-medium leading-4 transition-all',
             {
               'bg-white shadow-md': isActive === option,
             }

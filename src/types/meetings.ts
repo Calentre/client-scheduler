@@ -1,5 +1,12 @@
 export type AvailablePlatforms = 'google-meet' | 'teams'; // revisit this
 
+export type EventReservationStatus =
+  | 'confirmed'
+  | 'pending'
+  | 'received'
+  | 'denied'
+  | 'incomplete';
+
 export interface ScheduleItem {
   id: number;
   eventId: number;
@@ -25,4 +32,44 @@ export interface EventItem {
   isPaidEvent: boolean;
   status: string;
   platform: AvailablePlatforms;
+}
+
+export interface ConfrimedSchedule extends ScheduleItem {
+  eventLink: string;
+  startHour: string;
+  endHour: string;
+}
+
+export interface EventReservation {
+  client: {
+    email: string;
+    name: string;
+  };
+  event: EventItem;
+  schedule: ConfrimedSchedule;
+  status: EventReservationStatus;
+}
+
+// TODO: Revisit this interface
+export interface Transaction {
+  transactionId: string;
+  eventId: string;
+  amount: number;
+  clientEmail: string;
+  clientName: string;
+  paymentProviderId: string;
+  status: EventReservationStatus;
+  date: string;
+  hasAdminConfirmed: boolean;
+}
+
+export interface TransactionDetailsFormData {
+  eventId: string;
+  amount: number;
+  clientEmail?: string;
+  clientName?: string;
+  adminEmail?: string;
+  adminName?: string;
+  paymentProviderId: string;
+  date: string;
 }

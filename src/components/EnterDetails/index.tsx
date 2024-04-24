@@ -25,7 +25,7 @@ export const EnterDetails = () => {
 
   return (
     <EventDetails event={selectedEvent} showSelectedSchedule>
-      <Form />
+      <Form selectedEvent={selectedEvent} />
     </EventDetails>
   );
 };

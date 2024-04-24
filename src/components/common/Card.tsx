@@ -17,10 +17,13 @@ export const Card = ({
 }: Props) => {
   return (
     <div
-      className={classNames(`rounded-lg bg-white ${className}`, {
-        'border border-solid border-gray': !withoutBorder,
-        'px-9 py-7': withPadding,
-      })}
+      className={classNames(
+        {
+          'border-surface-secondary border border-solid': !withoutBorder,
+          'px-9 py-7': withPadding,
+        },
+        `rounded-lg bg-white ${className}`
+      )}
     >
       {children}
     </div>

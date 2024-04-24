@@ -6,7 +6,7 @@ import { EventItem, MappedScheduleItem, ScheduleItem } from '@/types/meetings';
 import { useCallback, useContext } from 'react';
 
 export const useSchedulerContext = () => {
-  const { schedulerState, dispatch } = useContext(SchedulerContext);
+  const { schedulerState, dispatch, ...rest } = useContext(SchedulerContext);
 
   const setSelectedEvent = useCallback(
     (event: EventItem) => {
@@ -40,6 +40,7 @@ export const useSchedulerContext = () => {
 
   return {
     ...schedulerState,
+    ...rest,
     dispatch,
     setSelectedEvent,
     clearselectedEvent,

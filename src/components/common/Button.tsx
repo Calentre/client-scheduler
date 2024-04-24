@@ -6,7 +6,7 @@ import Link from 'next/link';
 interface Props {
   children: React.ReactNode;
   onClick?: (el: unknown) => void;
-  theme?: 'carbon' | 'aurora' | 'outlined-sunrise';
+  theme?: 'carbon' | 'aurora' | 'outlined-sunrise' | 'link' | 'outlined-carbon';
   disabled?: boolean;
   block?: boolean;
   href?: string;
@@ -25,7 +25,6 @@ export const Button = ({
   type,
 }: Props) => {
   const classes = classNames(
-    `border border-solid text-sm font-normal ${className}`,
     {
       'rounded-3xl border-off-gray bg-off-gray px-16 py-2 text-light-gray':
         disabled,
@@ -33,10 +32,15 @@ export const Button = ({
         theme === 'aurora' && !disabled,
       'rounded-3xl border-light-gray bg-carbon-gray px-16 py-2 text-white':
         theme === 'carbon' && !disabled,
+      'rounded-3xl border-light-gray bg-transparent px-16 py-2 text-primary':
+        theme === 'outlined-carbon' && !disabled,
       'rounded-[5px] border-purple bg-transparent hover:border-transparent hover:bg-[linear-gradient(180deg,_#F8B453_0%,_#F8419D_100%)] hover:text-white':
         theme === 'outlined-sunrise' && !disabled,
       'w-full': block,
-    }
+      'w-fit border-0 bg-transparent p-0 text-blue-500 underline':
+        theme === 'link',
+    },
+    `border border-solid text-sm font-normal ${className}`
   );
 
   if (href && !disabled) {

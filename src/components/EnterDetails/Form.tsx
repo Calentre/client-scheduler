@@ -1,6 +1,8 @@
+import { postScheduleDetails, postTransaction } from '@/helpers/api';
 import { translate } from '@/helpers/translate';
-import { useForm } from '@/hooks/useForm';
 import { useSchedulerContext } from '@/hooks/useSchedulerContext';
+import { EventItem } from '@/types/meetings';
+import { useRouter } from 'next/navigation';
 import { FormEvent } from 'react';
 import { Strike } from '../Icons/Strike';
 import { Button } from '../common/Button';
@@ -8,25 +10,42 @@ import { CardHeader } from '../common/CardHeader';
 import { Input } from '../common/Input';
 import { TextArea } from '../common/TextArea';
 
-interface Props {}
+interface Props {
+  selectedEvent: EventItem;
+}
 
-export const Form = (props: Props) => {
-  const { selectedEvent } = useSchedulerContext();
-  const { formData, handleChange, handleTextAreaChange } = useForm({
-    fullName: '',
-    email: '',
-    note: '',
-  });
+export const Form = ({ selectedEvent }: Props) => {
+  const { selectedSchedule, formData, handleChange, handleTextAreaChange } =
+    useSchedulerContext();
+  const router = useRouter();
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const scheduleDetails = {
+      client: formData,
+      schedule: selectedSchedule,
+    };
     if (selectedEvent?.isPaidEvent) {
       /*
        * saves schedule details to supabase db
        * creates payment link with schedule-id
        * redirects to payment link previously created "user-name/event-path/payment/[schedule-id]"
        */
-      console.warn('payment flow');
+      const { transaction } = await postTransaction(
+        {
+          amount: parseFloat(selectedEvent.price.replace(/[^\d.]/g, '')),
+          clientEmail: formData.email,
+          clientName: formData.fullName,
+          date: `${selectedSchedule?.date}`,
+          eventId: `${selectedEvent.id}`,
+          paymentProviderId: '0',
+        },
+        'create'
+      );
+
+      if (transaction?.transactionId) {
+        router.push(`transaction/${transaction.transactionId}`);
+      }
     } else {
       /*
        * makes API call to create event.
@@ -34,12 +53,20 @@ export const Form = (props: Props) => {
        * when schedule events were saved into SB DB
        * redirect to "user-name/event-path/confirmed/[schedule-id]"
        */
-      console.warn('event confirmed :: ', { formData });
+
+      const scheduled = await postScheduleDetails({
+        ...scheduleDetails,
+        isPaid: false,
+      });
+
+      if (scheduled.reservationId) {
+        router.push(`confirmed/${scheduled.reservationId}`);
+      }
     }
   };
 
   return (
-    <div className='border-l border-off-gray pl-7 tablet:border-l-0 tablet:border-t tablet:pl-0 desktop:min-w-fit'>
+    <div className='border-surface-secondary border-l pl-7 tablet:border-l-0 tablet:border-t tablet:pl-0 desktop:min-w-fit'>
       <div className='flex flex-col gap-6 py-10 pr-10 tablet:pr-0'>
         <CardHeader>{translate('Enter details')}</CardHeader>
         <form

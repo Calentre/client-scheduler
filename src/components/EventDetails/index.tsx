@@ -50,19 +50,19 @@ export const EventDetails = ({
               {/* price/duration/platform */}
               <div className='flex flex-row gap-2'>
                 <Tag />
-                <span className='text-sm font-normal text-carbon-black'>
+                <span className='text-primary text-sm font-normal'>
                   {event.isPaidEvent ? event.price : translate('Free')}
                 </span>
               </div>
               <div className='flex flex-row'>
                 <Clock />
-                <span className='text-sm font-normal text-carbon-black'>
+                <span className='text-primary text-sm font-normal'>
                   {event.duration}
                 </span>
               </div>
               <div className='flex flex-row items-center gap-2'>
                 {platforms[event.platform].icon}
-                <span className='text-sm font-normal text-carbon-black'>
+                <span className='text-primary text-sm font-normal'>
                   {platforms[event.platform].displayName}
                 </span>
               </div>
@@ -82,7 +82,7 @@ export const EventDetails = ({
             </div>
             <div className='flex flex-col gap-2 pt-4 tablet:w-full'>
               {/* description */}
-              <p className='text-sm font-medium text-carbon-black'>
+              <p className='text-primary text-sm font-medium'>
                 {translate('Description')}
               </p>
               <small className='max-w-[203px] text-xs font-normal leading-5 text-gray tablet:max-w-full'>

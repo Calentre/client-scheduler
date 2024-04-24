@@ -28,13 +28,11 @@ export default async function RootLayout({ children, params }: Props) {
   }
 
   return (
-    <main>
-      <SchedulerProvider
-        events={userEventsResponse.events}
-        eventsOwner={userDetailsResponse.user}
-      >
-        {children}
-      </SchedulerProvider>
-    </main>
+    <SchedulerProvider
+      events={userEventsResponse.events}
+      eventsOwner={userDetailsResponse.user}
+    >
+      {children}
+    </SchedulerProvider>
   );
 }

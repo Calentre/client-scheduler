@@ -25,7 +25,7 @@ export const DateDetails = () => {
   );
 
   return (
-    <div className='border-l border-off-gray pl-7 tablet:border-l-0 tablet:border-t tablet:pl-0'>
+    <div className='border-surface-secondary border-l pl-7 tablet:border-l-0 tablet:border-t tablet:pl-0'>
       <div className='flex flex-col gap-6 py-10 pr-10 tablet:pr-0'>
         <div className='flex items-start'>
           <CardHeader>{translate('Select date and time')}</CardHeader>
@@ -44,7 +44,7 @@ export const DateDetails = () => {
                 <div className='flex w-full items-center justify-between'>
                   <div className='flex items-center gap-2'>
                     <Www />
-                    <span className='text-xs font-normal text-carbon-black'>
+                    <span className='text-primary text-xs font-normal'>
                       {userTimezone.displayTimezone}
                     </span>
                   </div>
