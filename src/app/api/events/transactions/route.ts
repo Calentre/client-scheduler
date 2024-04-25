@@ -1,7 +1,5 @@
 import { TransactionDetailsFormData } from '@/types/meetings';
 import { NextRequest, NextResponse } from 'next/server';
-import { MOCKED_DEMO_MEETINGS } from '../../user/events/route';
-import { DEMO_SCHEDULES } from '../schedules/route';
 
 export async function POST(request: Request | NextRequest) {
   const url = new URL(request.url);
@@ -68,19 +66,17 @@ export async function GET(request: Request | NextRequest) {
     // TODO: logic to retrieve transaction by id, and based on that, retrieve schedule and event items
     return NextResponse.json(
       {
-        // event: MOCKED_DEMO_MEETINGS[1], // this field will be retrieved on cliend-side
+        // event, // this field will be retrieved on cliend-side
         transaction: {
-          eventId: MOCKED_DEMO_MEETINGS[1].id,
-          amount: parseFloat(
-            MOCKED_DEMO_MEETINGS[1].price.replace(/[^\d.]/g, '')
-          ),
+          eventId: 122418,
+          amount: parseFloat('$39.49'.replace(/[^\d.]/g, '')),
           paymentProviderId: 1,
-          date: DEMO_SCHEDULES[1].date,
+          date: new Date(2024, 3, 2, 15).toISOString(),
           transactionId: 'random-transaction-23234',
           hasAdminConfirmed: false,
           status: 'incomplete', // TODO: (remove this comment) status could be: 'incomplete' | 'pending' | 'reveived' | 'denied'
         },
-        // schedule: DEMO_SCHEDULES[1], // this field will be retrieved on cliend-side
+        // schedule // this field will be retrieved on cliend-side
         ok: true,
       },
       { status: 200 }

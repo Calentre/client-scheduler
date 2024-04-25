@@ -1,5 +1,3 @@
-import { DEMO_SCHEDULES } from '@/app/api/events/schedules/route';
-import { MOCKED_DEMO_MEETINGS } from '@/app/api/user/events/route';
 import { EventReservation } from '@/types/meetings';
 import { TransactionComponentProps } from '.';
 import { ReservationStatus } from '../ReservationStatus';
@@ -15,9 +13,27 @@ export const ReceivedTransaction = ({
       email: 'client@mail.com',
       name: 'Client Name',
     },
-    event: MOCKED_DEMO_MEETINGS[1],
+    event: {
+      title: "Calentre's introduction",
+      duration: '60 Mins',
+      price: '$39.00',
+      id: 122418,
+      appendedUrlName: 'calentres-introduction',
+      description:
+        'This is a description of the meeting. All payment will be confirmed within 0 - 5hrs ',
+      isPaidEvent: true,
+      status: '',
+      timezone: 'Africa/Lagos',
+      platform: 'google-meet',
+    },
     schedule: {
-      ...DEMO_SCHEDULES[1],
+      ...{
+        date: new Date(2024, 3, 2, 15).toISOString(),
+        eventId: 122418,
+        id: 543,
+        isActive: true,
+        isExpired: false,
+      },
       eventLink: 'www.google.com',
       startHour: new Date().toISOString(),
       endHour: new Date().toISOString(),
