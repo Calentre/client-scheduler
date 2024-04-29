@@ -101,10 +101,9 @@ export const Calendar = ({
               <button
                 onClick={() => hasSchedule && onDayClick(hasSchedule)}
                 className={classNames(
-                  'h-8 w-8 rounded-full font-normal text-carbon-black transition-all hover:rounded-full hover:bg-hover-purple hover:text-carbon-black',
+                  'text-primary hover:text-primary h-8 w-8 rounded-full font-normal transition-all hover:rounded-full hover:bg-hover-purple',
                   {
-                    'bg-hover-purple text-carbon-black':
-                      !isSelected && hasSchedule,
+                    'text-primary bg-hover-purple': !isSelected && hasSchedule,
                     'bg-purple text-white hover:bg-purple hover:text-white':
                       isSelected,
                     'bg-white': !isSelected && !hasSchedule,

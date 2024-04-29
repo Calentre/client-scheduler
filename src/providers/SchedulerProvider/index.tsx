@@ -1,8 +1,9 @@
 'use client';
+import { useForm } from '@/hooks/useForm';
 import { EventsOwner } from '@/types/eventsOwner';
 import { EventItem, MappedScheduleItem, ScheduleItem } from '@/types/meetings';
 import { SchedulerProviderAction } from '@/types/scheduler';
-import { Dispatch, createContext, useReducer } from 'react';
+import { ChangeEvent, Dispatch, createContext, useReducer } from 'react';
 import { SchedulerReducer, schedulerReducer } from './reducer';
 
 export type TimeFormatType = '12h' | '24h';
@@ -26,6 +27,13 @@ export interface SchedulerState {
 export interface SchedulerProviderProps {
   schedulerState: SchedulerState;
   dispatch: Dispatch<SchedulerProviderAction>;
+  formData: {
+    fullName: string;
+    email: string;
+    note: string;
+  };
+  handleChange: (el: ChangeEvent<HTMLInputElement>) => void;
+  handleTextAreaChange: (el: ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
 export const SchedulerContext = createContext<SchedulerProviderProps>(
@@ -33,6 +41,20 @@ export const SchedulerContext = createContext<SchedulerProviderProps>(
 );
 
 // const MOCKED_ADMIN_TIMEZONE = 'Africa/Lagos';
+
+const initStateForm = {
+  fullName: '',
+  email: '',
+  note: '',
+};
+
+const initStateDevForm = {
+  fullName: 'Luis Flores',
+  email: 'floresfuentes93@gmail.com',
+  note: 'lorem lorem notes notes',
+};
+
+const isDev = process.env.NODE_ENV === 'development';
 
 export const SchedulerProvider = ({ children, events, eventsOwner }: Props) => {
   const [schedulerState, dispatch] = useReducer<SchedulerReducer>(
@@ -47,6 +69,9 @@ export const SchedulerProvider = ({ children, events, eventsOwner }: Props) => {
       timeFormat: '12h',
     }
   );
+  const { formData, handleChange, handleTextAreaChange } = useForm(
+    isDev ? initStateDevForm : initStateForm
+  );
 
   if (schedulerState.loading) {
     // TODO: loader here
@@ -54,7 +79,15 @@ export const SchedulerProvider = ({ children, events, eventsOwner }: Props) => {
   }
 
   return (
-    <SchedulerContext.Provider value={{ schedulerState, dispatch }}>
+    <SchedulerContext.Provider
+      value={{
+        schedulerState,
+        dispatch,
+        formData,
+        handleChange,
+        handleTextAreaChange,
+      }}
+    >
       {children}
     </SchedulerContext.Provider>
   );

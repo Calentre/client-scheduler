@@ -21,10 +21,10 @@ export const MeetItem = ({ meeting, eventOwner }: Props) => {
         className='flex w-full cursor-pointer flex-row items-center justify-between'
       >
         <div className='flex flex-col gap-2'>
-          <p className='text-lg font-semibold leading-normal text-carbon-black'>
+          <p className='text-primary text-lg font-semibold leading-normal'>
             {title}
           </p>
-          <div className='flex gap-5 text-sm font-normal leading-normal text-carbon-black'>
+          <div className='text-primary flex gap-5 text-sm font-normal leading-normal'>
             <div className='flex flex-row gap-0'>
               <Clock />
               <span>{duration}</span>

@@ -3,12 +3,6 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export function GET(request: Request | NextRequest) {
   try {
-    const url = new URL(request.url);
-    const userName = url.searchParams.get('user');
-    console.log(userName); // TODO: remove
-
-    // TODO: logic to retrieve user events from supabase (with prisma) using userName constant
-
     const MOCKED_DEMO_MEETINGS: EventItem[] = [
       {
         title: 'Life Coaching Introduction',
@@ -26,7 +20,7 @@ export function GET(request: Request | NextRequest) {
         title: "Calentre's introduction",
         duration: '60 Mins',
         price: '$39.00',
-        id: 2,
+        id: 122418,
         appendedUrlName: 'calentres-introduction',
         description:
           'This is a description of the meeting. All payment will be confirmed within 0 - 5hrs ',
@@ -48,6 +42,11 @@ export function GET(request: Request | NextRequest) {
         platform: 'teams',
       },
     ];
+    const url = new URL(request.url);
+    const userName = url.searchParams.get('user');
+    console.log(userName); // TODO: remove
+
+    // TODO: logic to retrieve user events from supabase (with prisma) using userName constant
 
     return NextResponse.json(
       { events: MOCKED_DEMO_MEETINGS, ok: true },
