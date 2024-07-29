@@ -1,4 +1,4 @@
-export type AvailablePlatforms = 'google-meet' | 'teams'; // revisit this
+export type AvailablePlatforms = 'google_meet' | 'teams'; // revisit this
 
 export type EventReservationStatus =
   | 'confirmed'

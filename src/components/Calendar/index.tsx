@@ -32,7 +32,7 @@ export const Calendar = ({
     return (
       <li
         key={day}
-        className='flex h-full w-full pb-4 text-[12px] font-medium text-gray'
+        className='flex h-full w-full pb-4 text-xs font-medium text-secondary'
       >
         {day}
       </li>
@@ -89,6 +89,8 @@ export const Calendar = ({
         );
       });
 
+      const isPreviousDay = new Date(date).getTime() <= now.getTime();
+
       days.push(
         <li
           key={i}
@@ -99,14 +101,22 @@ export const Calendar = ({
               className={'h-8 w-10 rounded-none bg-white bg-opacity-20 text-sm'}
             >
               <button
-                onClick={() => hasSchedule && onDayClick(hasSchedule)}
+                onClick={() =>
+                  hasSchedule && !isPreviousDay && onDayClick(hasSchedule)
+                }
                 className={classNames(
-                  'text-primary hover:text-primary h-8 w-8 rounded-full font-normal transition-all hover:rounded-full hover:bg-hover-purple',
+                  'h-8 w-8 cursor-pointer rounded-full font-medium transition-all hover:rounded-full hover:bg-hover-purple',
                   {
-                    'text-primary bg-hover-purple': !isSelected && hasSchedule,
-                    'bg-purple text-white hover:bg-purple hover:text-white':
+                    'bg-hover-purple text-primary hover:text-primary':
+                      !isSelected && hasSchedule && !isPreviousDay,
+                    'bg-purple text-surface-primary hover:bg-purple hover:text-surface-primary':
                       isSelected,
-                    'bg-white': !isSelected && !hasSchedule,
+                    'bg-surface-primary hover:text-primary':
+                      !isSelected && !hasSchedule,
+                    'bg-purple text-sm font-normal text-contrast hover:text-contrast':
+                      isPreviousDay && !hasSchedule,
+                    'bg-hover-purple text-sm font-normal text-contrast hover:text-contrast':
+                      isPreviousDay && hasSchedule,
                   }
                 )}
               >
@@ -125,7 +135,7 @@ export const Calendar = ({
   return (
     <div>
       <div className='flex justify-between transition-all'>
-        <div className='mb-5 flex gap-1 text-carbon-gray'>
+        <div className='mb-5 flex gap-1 text-md font-medium text-primary'>
           <span>
             {translate(
               selectedDateTime.toLocaleString('default', {

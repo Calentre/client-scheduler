@@ -34,6 +34,7 @@ model flow_state {
   created_at             DateTime?             @db.Timestamptz(6)
   updated_at             DateTime?             @db.Timestamptz(6)
   authentication_method  String
+  auth_code_issued_at    DateTime?             @db.Timestamptz(6)
   saml_relay_states      saml_relay_states[]
 
   @@index([created_at(sort: Desc)])
@@ -44,7 +45,7 @@ model flow_state {
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model identities {
-  id              String
+  provider_id     String
   user_id         String    @db.Uuid
   identity_data   Json
   provider        String
@@ -52,9 +53,10 @@ model identities {
   created_at      DateTime? @db.Timestamptz(6)
   updated_at      DateTime? @db.Timestamptz(6)
   email           String?   @default(dbgenerated("lower((identity_data ->> 'email'::text))"))
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   users           users     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
-  @@id([provider, id])
+  @@unique([provider_id, provider], map: "identities_provider_id_provider_unique")
   @@index([email])
   @@index([user_id])
   @@schema("auth")
@@ -147,6 +149,7 @@ model saml_providers {
   attribute_mapping Json?
   created_at        DateTime?     @db.Timestamptz(6)
   updated_at        DateTime?     @db.Timestamptz(6)
+  name_id_format    String?
   sso_providers     sso_providers @relation(fields: [sso_provider_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@index([sso_provider_id])
@@ -161,7 +164,6 @@ model saml_relay_states {
   request_id      String
   for_email       String?
   redirect_to     String?
-  from_ip_address String?       @db.Inet
   created_at      DateTime?     @db.Timestamptz(6)
   updated_at      DateTime?     @db.Timestamptz(6)
   flow_state_id   String?       @db.Uuid
@@ -193,6 +195,7 @@ model sessions {
   refreshed_at   DateTime?        @db.Timestamp(6)
   user_agent     String?
   ip             String?          @db.Inet
+  tag            String?
   mfa_amr_claims mfa_amr_claims[]
   refresh_tokens refresh_tokens[]
   users          users            @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
@@ -237,81 +240,184 @@ model sso_providers {
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 /// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model users {
-  instance_id                 String?        @db.Uuid
-  id                          String         @id @db.Uuid
-  aud                         String?        @db.VarChar(255)
-  role                        String?        @db.VarChar(255)
-  email                       String?        @db.VarChar(255)
-  encrypted_password          String?        @db.VarChar(255)
-  email_confirmed_at          DateTime?      @db.Timestamptz(6)
-  invited_at                  DateTime?      @db.Timestamptz(6)
-  confirmation_token          String?        @db.VarChar(255)
-  confirmation_sent_at        DateTime?      @db.Timestamptz(6)
-  recovery_token              String?        @db.VarChar(255)
-  recovery_sent_at            DateTime?      @db.Timestamptz(6)
-  email_change_token_new      String?        @db.VarChar(255)
-  email_change                String?        @db.VarChar(255)
-  email_change_sent_at        DateTime?      @db.Timestamptz(6)
-  last_sign_in_at             DateTime?      @db.Timestamptz(6)
+  instance_id                 String?           @db.Uuid
+  id                          String            @id @db.Uuid
+  aud                         String?           @db.VarChar(255)
+  role                        String?           @db.VarChar(255)
+  email                       String?           @db.VarChar(255)
+  encrypted_password          String?           @db.VarChar(255)
+  email_confirmed_at          DateTime?         @db.Timestamptz(6)
+  invited_at                  DateTime?         @db.Timestamptz(6)
+  confirmation_token          String?           @db.VarChar(255)
+  confirmation_sent_at        DateTime?         @db.Timestamptz(6)
+  recovery_token              String?           @db.VarChar(255)
+  recovery_sent_at            DateTime?         @db.Timestamptz(6)
+  email_change_token_new      String?           @db.VarChar(255)
+  email_change                String?           @db.VarChar(255)
+  email_change_sent_at        DateTime?         @db.Timestamptz(6)
+  last_sign_in_at             DateTime?         @db.Timestamptz(6)
   raw_app_meta_data           Json?
   raw_user_meta_data          Json?
   is_super_admin              Boolean?
-  created_at                  DateTime?      @db.Timestamptz(6)
-  updated_at                  DateTime?      @db.Timestamptz(6)
-  phone                       String?        @unique
-  phone_confirmed_at          DateTime?      @db.Timestamptz(6)
-  phone_change                String?        @default("")
-  phone_change_token          String?        @default("") @db.VarChar(255)
-  phone_change_sent_at        DateTime?      @db.Timestamptz(6)
-  confirmed_at                DateTime?      @default(dbgenerated("LEAST(email_confirmed_at, phone_confirmed_at)")) @db.Timestamptz(6)
-  email_change_token_current  String?        @default("") @db.VarChar(255)
-  email_change_confirm_status Int?           @default(0) @db.SmallInt
-  banned_until                DateTime?      @db.Timestamptz(6)
-  reauthentication_token      String?        @default("") @db.VarChar(255)
-  reauthentication_sent_at    DateTime?      @db.Timestamptz(6)
-  is_sso_user                 Boolean        @default(false)
-  deleted_at                  DateTime?      @db.Timestamptz(6)
+  created_at                  DateTime?         @db.Timestamptz(6)
+  updated_at                  DateTime?         @db.Timestamptz(6)
+  phone                       String?           @unique
+  phone_confirmed_at          DateTime?         @db.Timestamptz(6)
+  phone_change                String?           @default("")
+  phone_change_token          String?           @default("") @db.VarChar(255)
+  phone_change_sent_at        DateTime?         @db.Timestamptz(6)
+  confirmed_at                DateTime?         @default(dbgenerated("LEAST(email_confirmed_at, phone_confirmed_at)")) @db.Timestamptz(6)
+  email_change_token_current  String?           @default("") @db.VarChar(255)
+  email_change_confirm_status Int?              @default(0) @db.SmallInt
+  banned_until                DateTime?         @db.Timestamptz(6)
+  reauthentication_token      String?           @default("") @db.VarChar(255)
+  reauthentication_sent_at    DateTime?         @db.Timestamptz(6)
+  is_sso_user                 Boolean           @default(false)
+  deleted_at                  DateTime?         @db.Timestamptz(6)
+  is_anonymous                Boolean           @default(false)
   identities                  identities[]
   mfa_factors                 mfa_factors[]
+  one_time_tokens             one_time_tokens[]
   sessions                    sessions[]
-  events                      events[]
-  users                       public_users[]
+  user_profile                user_profile[]
 
   @@index([instance_id])
+  @@index([is_anonymous])
   @@schema("auth")
 }
 
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model one_time_tokens {
+  id         String              @id @db.Uuid
+  user_id    String              @db.Uuid
+  token_type one_time_token_type
+  token_hash String
+  relates_to String
+  created_at DateTime            @default(now()) @db.Timestamp(6)
+  updated_at DateTime            @default(now()) @db.Timestamp(6)
+  users      users               @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, token_type])
+  @@index([relates_to], map: "one_time_tokens_relates_to_hash_idx", type: Hash)
+  @@index([token_hash], map: "one_time_tokens_token_hash_hash_idx", type: Hash)
+  @@schema("auth")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model events {
+model admin_calendar {
+  id                BigInt   @id @default(autoincrement())
   created_at        DateTime @default(now()) @db.Timestamptz(6)
-  event_name        String?
-  event_description String?
-  video_call_type   String?
-  duration          Decimal? @db.Decimal
-  event_link        String?
-  event_type        String?
-  amount            Float?   @db.Real
-  is_multiple       Boolean? @default(false)
-  availability      Json?    @db.Json
   user_id           String?  @default(dbgenerated("auth.uid()")) @db.Uuid
-  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  users             users?   @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  calendar_timezone String?  @db.VarChar
+  name              String?  @db.VarChar
+  isActive          Boolean?
+  meta              Json?
 
   @@schema("public")
 }
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model public_users {
-  id          BigInt   @id @default(autoincrement())
-  created_at  DateTime @default(now()) @db.Timestamptz(6)
-  user_id     String?  @db.Uuid
-  user_name   String   @unique
-  raw_data    Json     @db.Json
-  description String   @default("")
-  email       String?  @unique
-  users       users?   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model admin_payment_information {
+  id            BigInt   @id @default(autoincrement())
+  created_at    DateTime @default(now()) @db.Timestamptz(6)
+  user_id       String?  @default(dbgenerated("auth.uid()")) @db.Uuid
+  provider_name String?  @db.VarChar
+  isActive      Boolean? @default(true)
+  details       Json?
 
-  @@map("users")
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model availability {
+  id          String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at  DateTime?     @default(dbgenerated("(now() AT TIME ZONE 'utc'::text)")) @db.Timestamptz(6)
+  time_slot   Json?
+  event_id    String?       @db.Uuid
+  is_active   Boolean?      @default(true)
+  event       event?        @relation(fields: [event_id], references: [id], onDelete: Cascade)
+  reservation reservation[]
+
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model event {
+  created_at        DateTime       @default(now()) @db.Timestamptz(6)
+  event_name        String?
+  event_description String?
+  platform_type     String?
+  duration          String?
+  event_link        String?        @default("")
+  event_type        String?
+  amount            Float?         @db.Real
+  is_multiple       Boolean?       @default(false)
+  user_id           String?        @default(dbgenerated("auth.uid()")) @db.Uuid
+  id                String         @id(map: "events_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  is_active         Boolean?       @default(false)
+  username          String?        @db.VarChar
+  availability      availability[]
+  user_profile      user_profile?  @relation(fields: [username], references: [username], onDelete: NoAction, onUpdate: NoAction)
+  reservation       reservation[]
+  transaction       transaction[]
+
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model reservation {
+  id                    String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at            DateTime      @default(now()) @db.Timestamptz(6)
+  event_id              String?       @db.Uuid
+  availability_id       String?       @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  transaction_id        String?       @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  reservation_date_time DateTime?     @db.Timestamptz(6)
+  availability          availability? @relation(fields: [availability_id], references: [id], onDelete: Cascade)
+  event                 event?        @relation(fields: [event_id], references: [id], onDelete: Cascade)
+  transaction           transaction?  @relation(fields: [transaction_id], references: [id], onDelete: Cascade)
+
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model transaction {
+  id                           String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  created_at                   DateTime      @default(now()) @db.Timestamptz(6)
+  event_id                     String?       @db.Uuid
+  user_id                      String?       @default(dbgenerated("auth.uid()")) @db.Uuid
+  admin_payment_information_id String?       @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  has_admin_confirmed          Boolean?      @default(false)
+  amount_paid                  Int?          @db.SmallInt
+  status                       String?       @db.VarChar
+  date                         DateTime?     @db.Timestamptz(6)
+  reservation                  reservation[]
+  event                        event?        @relation(fields: [event_id], references: [id], onDelete: Cascade)
+
+  @@schema("public")
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model user_profile {
+  id              String   @id @default(dbgenerated("auth.uid()")) @db.Uuid
+  created_at      DateTime @default(now()) @db.Timestamptz(6)
+  username        String?  @unique @db.VarChar
+  first_name      String?  @db.VarChar
+  last_name       String?  @db.VarChar
+  profile_picture String?  @db.VarChar
+  is_active       Boolean?
+  is_verified     Boolean
+  user_id         String?  @db.Uuid
+  description     String?  @db.VarChar
+  event           event[]
+  users           users?   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
   @@schema("public")
 }
 
@@ -340,6 +446,17 @@ enum factor_status {
 enum factor_type {
   totp
   webauthn
+
+  @@schema("auth")
+}
+
+enum one_time_token_type {
+  confirmation_token
+  reauthentication_token
+  recovery_token
+  email_change_token_new
+  email_change_token_current
+  phone_change_token
 
   @@schema("auth")
 }

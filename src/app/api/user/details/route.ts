@@ -1,24 +1,29 @@
+import prisma from '@/helpers/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
-export function GET(request: Request | NextRequest) {
+export async function GET(request: Request | NextRequest) {
   try {
     const url = new URL(request.url);
-    const userName = url.searchParams.get('user');
+    const username = url.searchParams.get('user');
 
-    // TODO: logic to retrieve user data from supabase (with prisma) using userName constant
+    await prisma.$connect();
 
-    const DEMO_EVENTS_OWNER = {
-      name: 'Patrick Musa',
-      avatar: 'some_picture',
-      userName,
-      description:
-        'I help you overcome obstacles, set meaningful goals, and create a purposeful, confident, and fulfilling life.',
+    if (!username) {
+      throw new Error('Invalid user');
+    }
+
+    const userProfileResponse = await prisma.user_profile.findUnique({
+      where: { username },
+    });
+
+    const userDetails = {
+      name: `${userProfileResponse?.first_name} ${userProfileResponse?.last_name}`,
+      avatar: userProfileResponse?.profile_picture,
+      userName: userProfileResponse?.username,
+      description: userProfileResponse?.description,
     };
 
-    return NextResponse.json(
-      { user: DEMO_EVENTS_OWNER, ok: true },
-      { status: 200 }
-    );
+    return NextResponse.json({ user: userDetails, ok: true }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       { user: null, error: `${error}`, ok: false },

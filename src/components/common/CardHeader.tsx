@@ -6,8 +6,8 @@ interface Props {
 
 export const CardHeader = ({ children }: Props) => {
   return (
-    <h2 className='text-[22px] font-semibold leading-none tracking-[0.15px] text-gray'>
+    <h4 className='text-2xl font-semibold leading-none tracking-[0.15px] text-secondary'>
       {children}
-    </h2>
+    </h4>
   );
 };

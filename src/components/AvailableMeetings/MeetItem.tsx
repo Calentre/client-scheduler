@@ -17,14 +17,14 @@ export const MeetItem = ({ meeting, eventOwner }: Props) => {
   return (
     <>
       <Link
-        href={`/${eventOwner.userName}/${meeting.appendedUrlName}`}
+        href={`/${eventOwner.userName}/events/${meeting.appendedUrlName}`}
         className='flex w-full cursor-pointer flex-row items-center justify-between'
       >
         <div className='flex flex-col gap-2'>
-          <p className='text-primary text-lg font-semibold leading-normal'>
+          <p className='text-lg font-semibold leading-normal text-primary'>
             {title}
           </p>
-          <div className='text-primary flex gap-5 text-sm font-normal leading-normal'>
+          <div className='flex gap-5 text-sm font-normal leading-normal text-primary'>
             <div className='flex flex-row gap-0'>
               <Clock />
               <span>{duration}</span>
