@@ -5,7 +5,7 @@ const nextConfig = {
     databaseUrl: process.env.DATABASE_URL,
   },
   images: {
-    domains: ['encrypted-tbn0.gstatic.com'], // dev porpuses, will be removed...
+    domains: ['encrypted-tbn0.gstatic.com', 'media.licdn.com'], // dev porpuses, will be removed...
   },
 };
 

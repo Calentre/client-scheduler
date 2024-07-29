@@ -7,7 +7,7 @@ interface Props {
 
 export const CalendarCheck = ({
   size = 18,
-  color = themeColors['success-green'],
+  color = themeColors.success,
 }: Props) => {
   return (
     <svg

@@ -15,7 +15,7 @@ export const EventSelector = () => {
     return <Four04 />;
   }
   return (
-    <div className='tablet:gap-4 flex w-full max-w-xl flex-col gap-10'>
+    <div className='flex w-full max-w-xl flex-col gap-10 tablet:gap-4'>
       <Card withoutBorder>
         <EventOwnerDetails />
       </Card>

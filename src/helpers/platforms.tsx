@@ -6,7 +6,7 @@ import { Wise } from '@/components/Icons/Wise';
 import { ReactNode } from 'react';
 
 export const platforms = {
-  'google-meet': {
+  google_meet: {
     displayName: 'Google Meet',
     icon: <GoogleMeet />,
   },

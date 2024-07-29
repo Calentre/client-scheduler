@@ -19,10 +19,10 @@ export const Card = ({
     <div
       className={classNames(
         {
-          'border-surface-secondary border border-solid': !withoutBorder,
+          'border border-solid border-surface-secondary': !withoutBorder,
           'px-9 py-7': withPadding,
         },
-        `rounded-lg bg-white ${className}`
+        `rounded-lg bg-surface-primary ${className}`
       )}
     >
       {children}

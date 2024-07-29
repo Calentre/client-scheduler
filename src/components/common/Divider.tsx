@@ -22,7 +22,7 @@ export const Divider = ({
     return (
       <div
         className={classNames(
-          `${margins[margin]} border-dotted border-off-gray`,
+          `${margins[margin]} border-dotted border-surface-secondary`,
           {
             'h-px w-full border-t': horizontal && !vertical,
             'h-full w-px border-l': !horizontal && vertical,
@@ -33,7 +33,7 @@ export const Divider = ({
   }
   return (
     <div
-      className={classNames(`${margins[margin]} bg-off-gray`, {
+      className={classNames(`${margins[margin]} bg-surface-secondary`, {
         'h-px w-full': horizontal && !vertical,
         'h-full w-px': !horizontal && vertical,
       })}
